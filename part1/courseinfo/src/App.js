@@ -1,30 +1,29 @@
 import React from 'react'
 
 const App = () => {
-  const course = 'Half Stack application development'
-  const part1 = 'Fundementals of React'
-  const excercises1 = 10
-  const part2 = 'Using props to pass data'
-  const excercises2 = 7
-  const part3 = 'State of a component'
-  const excercises3 = 14
+  const course = {
+    name: 'Half Stack application development',
+    parts: [
+      {
+        name: 'Fundementals of React',
+        excercises: 10
+      },
+      {
+        name: 'Using props to pass data',
+        excercises: 7
+      },
+      {
+        name: 'State of a component',
+        excercises: 14
+      }
+    ]
+  }
 
   return (
     <div>
-      <Header course={course} />
-      <Content
-        part1={part1}
-        part2={part2}
-        part3={part3}
-        excercises1={excercises1}
-        excercises2={excercises2}
-        excercises3={excercises3}
-      />
-      <Total
-        excercises1={excercises1}
-        excercises2={excercises2}
-        excercises3={excercises3}
-      />
+      <Header course={course.name} />
+      <Content parts={course.parts} />
+      <Total parts={course.parts} />
     </div>
   )
 }
@@ -32,29 +31,33 @@ const App = () => {
 export default App;
 
 const Header = (props) => {
+  console.log(props)
   return (
     <h1>{props.course}</h1>
   )
 }
 
 const Content = (props) => {
+  let content = []
+  props.parts.forEach((part, i) => {
+    content.push(<Part part={part} key={i} />)
+  })
+
   return (
     <div>
-      <Part part={props.part1} excercises={props.excercises1} />
-      <Part part={props.part2} excercises={props.excercises2} />
-      <Part part={props.part3} excercises={props.excercises3} />
+      {content}
     </div>
   )
 }
 
 const Total = (props) => {
   return (
-    <p>Number of excercises {props.excercises1 + props.excercises2 + props.excercises3}</p>
+    <p>Number of excercises {props.parts[0].excercises + props.parts[1].excercises + props.parts[2].excercises}</p>
   )
 }
 
 const Part = (props) => {
   return (
-    <p>{props.part} {props.excercises}</p>
+    <p>{props.part.name} {props.part.excercises}</p>
   )
 }
