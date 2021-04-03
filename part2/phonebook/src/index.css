@@ -5,9 +5,65 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  color:#1F1F21
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+.notification {
+  position: absolute;
+  left: 35%;
+  top: -200px;
+  font-weight: 500;
+  margin: 0;
+  padding: 0;
+  width: 400px;
+  height: 50px;
+  text-align: center;
+  box-shadow: rgb(0 0 0 / 35%) 0px 5px 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  animation: notification 5s ease-in-out 0s 1 normal;
+  cursor: pointer;
+}
+
+
+.success {
+  background-color: rgba(76, 217, 100, .6);
+}
+
+.error {
+  background-color: rgba(255, 59, 48, .6);
+}
+
+.success:hover {
+  background-color: rgba(76, 217, 100, .5);
+}
+
+.error:hover {
+  background-color: rgba(255, 59, 48, .5);
+}
+
+
+@keyframes notification {
+    0%{
+      top: -200px
+    }
+    15%{
+      top: 5px
+    }
+    85%{
+      top: 5px
+    }
+    100%{
+      top: -200px
+    }
+}
+
+
