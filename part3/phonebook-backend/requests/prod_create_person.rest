@@ -1,0 +1,7 @@
+POST https://joel-fullstackopen-phonebook.herokuapp.com/api/persons
+content-type: application/json
+
+{
+    "name": "Betty Holberton",
+    "number": "32-232-232432"
+}

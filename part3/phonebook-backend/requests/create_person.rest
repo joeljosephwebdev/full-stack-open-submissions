@@ -1,0 +1,26 @@
+POST http://localhost:3001/api/persons
+content-type: application/json
+
+{
+    "name": "Betty Holberton",
+    "number": "32-232-232432"
+}
+
+###
+//error include name & number
+POST http://localhost:3001/api/persons
+content-type: application/json
+
+{
+    "number": "32-232-232432"
+}
+
+###
+//error duplicate name
+POST http://localhost:3001/api/persons
+content-type: application/json
+
+{
+    "name": "Ada LoveLace",
+    "number": "32-232-232432"
+}

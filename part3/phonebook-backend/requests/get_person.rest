@@ -1,0 +1,6 @@
+//successful request
+GET http://localhost:3001/api/persons/2
+
+###
+//failed request example
+GET http://localhost:3001/api/persons/5 
