@@ -92,6 +92,11 @@ const App = () => {
           content: `Added ${returnedContact.name} to the phonebook`,
           type: 'success'
         })
+      }).catch(error => {
+        createNotification({
+          content: error.response.data.error,
+          type: 'error'
+        })
       })
   }
 

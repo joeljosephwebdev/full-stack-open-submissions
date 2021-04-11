@@ -10,104 +10,94 @@ app.use(express.json())
 app.use(express.static('build'))
 app.use(cors())
 
-morgan.token('body', (req, res) => JSON.stringify(req.body))
+morgan.token('body', (request) => JSON.stringify(request.body))
 app.use(morgan(':method :url :status :res[content.length] :response-time ms :body'))
 
 app.get('/api/persons', (request, response) => {
-    Person.find({}).then(persons => {
-        response.json(persons)
-    })
+  Person.find({}).then(persons => {
+    response.json(persons)
+  })
 })
 
 app.get('/info', (request, response) => {
-    Person.countDocuments({}).then(count => {
-        response.send(
-            `<p>Phonebook has info for ${count} people</p>
+  Person.countDocuments({}).then(count => {
+    response.send(
+      `<p>Phonebook has info for ${count} people</p>
             <p>${new Date()}</p>
             `)
-    })
+  })
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
-    Person.findById(request.params.id)
-        .then(person => {
-            if (person) {
-                response.json(person)
-            } else {
-                response.status(404).end()
-            }
-        })
-        .catch(error => next(error))
+  Person.findById(request.params.id)
+    .then(person => {
+      if (person) {
+        response.json(person)
+      } else {
+        response.status(404).end()
+      }
+    })
+    .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
-    Person.findByIdAndRemove(request.params.id)
-        .then(result => {
-            response.status(204).end()
-        })
-        .catch(error => next(error))
+  Person.findByIdAndRemove(request.params.id)
+    .then(() => {
+      response.status(204).end()
+    })
+    .catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
-    const body = request.body
+  const body = request.body
 
-    const person = {
-        name: body.name,
-        number: body.number
-    }
+  const newNumber = {
+    number: body.number
+  }
 
-    Person.findByIdAndUpdate(request.params.id, person, { new: true })
-        .then(updatedPerson => {
-            response.json(updatedPerson)
-        })
-        .catch(error => next(error))
+  Person.findByIdAndUpdate(request.params.id, newNumber, { new: true })
+    .then(updatedPerson => {
+      response.json(updatedPerson)
+    })
+    .catch(error => next(error))
 })
 
-app.post('/api/persons', (request, response) => {
-    const body = request.body
+app.post('/api/persons', (request, response, next) => {
+  const body = request.body
 
-    if (!body.name || !body.number) {
-        return response.status(400).json({
-            error: 'name or number cannot be blank'
-        })
-    }
+  const person = new Person({
+    name: body.name,
+    number: body.number,
+    date: new Date()
+  })
 
-    //     //wrote an overly complex expression instead of just using names.includes() in order to ignore case when checking names
-    //     if (names.filter((name) => name.toLowerCase().includes(request.body.name.toLowerCase())).length > 0) {
-    //         return response.status(400).json({
-    //             error: 'name already exists in phonebook'
-    //         })
-
-    const person = new Person({
-        name: request.body.name,
-        number: request.body.number,
-        date: new Date()
-    })
-
-    person.save().then(result => {
-        response.json(person)
-    })
+  person.save()
+    .then(person => {
+      response.json(person)
+    }).catch(error => next(error))
 })
 
 const unknownEndpoint = (request, response) => {
-    response.status(404).send({ error: 'unknown endpoint' })
+  response.status(404).send({ error: 'unknown endpoint' })
 }
 
 app.use(unknownEndpoint)
 
 const errorHandler = (error, request, response, next) => {
-    console.log(error.message)
+  console.log(error.message)
 
-    if (error.name === 'CastError') {
-        return response.status(400).send({ error: 'malformed id' })
-    }
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformed id' })
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).send({ error: error.message })
+  }
 
-    next(error)
+  next(error)
 }
 
 app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
-    console.log(`Server listening on port ${PORT}`)
+  console.log(`Server listening on port ${PORT}`)
 })
